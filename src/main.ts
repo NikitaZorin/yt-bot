@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import { getBotToken } from 'nestjs-telegraf';
 import { AppModule } from './app.module';
 
 async function bootstrap() {

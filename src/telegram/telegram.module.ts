@@ -4,20 +4,17 @@ import { TelegrafModule } from 'nestjs-telegraf';
 import { TelegramService } from './telegram.service';
 import { options } from './telegram-config.factory';
 import { YoutubeService } from 'src/yt/yt.service';
+import { SpotifyService } from 'src/spotify/spotify.service';
+import { SpotifyModule } from 'src/spotify/spotify.module';
 
 
 
 
 @Module({
-    // imports: [
-    //     ConfigModule.forRoot(),
-    //     TelegrafModule.forRoot({
-    //         token: process.env.TELEGRAM_TOKEN,
-    //       })
-    // ],
     imports: [
-        TelegrafModule.forRootAsync(options())
+        TelegrafModule.forRootAsync(options()),
+        SpotifyModule
     ],
-    providers: [TelegramService, YoutubeService]
+    providers: [TelegramService, YoutubeService, SpotifyService]
 })
 export class TelegramModule { }

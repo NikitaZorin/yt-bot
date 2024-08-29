@@ -3,6 +3,7 @@ import { Scenes, Telegraf } from "telegraf";
 import { InlineQueryResultArticle } from "telegraf/typings/core/types/typegram";
 import { YoutubeService } from "src/yt/yt.service";
 import { ConfigService } from "@nestjs/config";
+import { SpotifyService } from "src/spotify/spotify.service";
 
 type Context = Scenes.SceneContext;
 
@@ -11,7 +12,8 @@ export class TelegramService extends Telegraf<Context> {
     
     constructor(
         private readonly config: ConfigService,
-        private readonly youtube: YoutubeService
+        private readonly youtube: YoutubeService,
+        private readonly spotify: SpotifyService
     ) {
         super(config.get('TELEGRAM_TOKEN'),)
     }
@@ -19,6 +21,7 @@ export class TelegramService extends Telegraf<Context> {
     @On('inline_query')
     async onMessage(@Ctx() ctx: Context) {
         const query = ctx.inlineQuery.query;
+
 
         const results = await this.getQueryResults(query);
         await ctx.answerInlineQuery(results, {button: {text: "Change your", start_parameter: "test"}});
@@ -29,25 +32,12 @@ export class TelegramService extends Telegraf<Context> {
         const type = await this.linkCheck(query);
 
 
-        const results: InlineQueryResultArticle[] = await this.youtube.getSongUrl(query);
+        // await this.spotify.getSongUrl(query);
+        // const results: InlineQueryResultArticle[] = await this.youtube.getSongUrl(query);
+
+        const results: InlineQueryResultArticle[] = await this.spotify.getSongUrl(query);
 
 
-
-        // let msgRes = "";
-
-        // if (type === "youtube") {
-        //     msgRes = "In Progress";
-        // } else if (type === "spotify") {
-        //     // msgRes = "In Progress";
-        // } else {
-        //   msgRes = await this.youtube.getSongUrl(query);
-        // }
-
-        // const results: InlineQueryResultArticle[] = [
-        //     { type: 'article', id: "1", title: "Send your youtube/spotify link", input_message_content: { message_text: msgRes  }, thumbnail_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/1982px-Spotify_icon.svg.png" },
-        //     { type: 'article', id: "2", title: "Search youtube/spotify song by name", input_message_content: { message_text: msgRes  }, thumbnail_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/1982px-Spotify_icon.svg.png" }
-        // ];
-        // const results: InlineQueryResultArticle[] = [];
         return results;
     }
 
