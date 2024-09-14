@@ -8,7 +8,7 @@ import { TelegramModule } from './telegram/telegram.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(process.env.DB_URI),
-    TelegramModule,
+    TelegramModule
   ]
 })
 export class AppModule {}
