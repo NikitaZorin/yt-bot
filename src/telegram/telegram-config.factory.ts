@@ -18,3 +18,4 @@ export const options = (): TelegrafModuleAsyncOptions => {
     useFactory: (config: ConfigService) => telegrafModuleOptions(config),
   };
 };
+
