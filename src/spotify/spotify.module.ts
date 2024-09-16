@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { SpotifyService } from './spotify.service';
 import { Token, TokenSchema } from './schemas/token.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigService } from '@nestjs/config';
+import { SpotifyController } from './controllers/spotify.controller';
 
 @Module({
   imports: [
@@ -15,5 +15,6 @@ import { ConfigService } from '@nestjs/config';
   ],
   providers: [SpotifyService],
   exports: [SpotifyService, MongooseModule],
+  controllers: [SpotifyController],
 })
 export class SpotifyModule {}
