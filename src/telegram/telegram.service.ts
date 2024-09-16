@@ -1,13 +1,21 @@
 import { Ctx, Update, On, Start } from 'nestjs-telegraf';
 import { Scenes, Telegraf } from 'telegraf';
 import { InlineQueryResultArticle, CallbackQuery } from 'telegraf/typings/core/types/typegram';
+
 import { YoutubeService } from '../yt/yt.service';
 import { SpotifyService } from '../spotify/spotify.service';
 import { ConfigService } from '@nestjs/config';
-import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from './schemas/user.schema';
-import { Model } from 'mongoose';
-import { UserData } from './schemas/user.schema';
+import { UserService } from 'src/user/user.service';
+
+const mainInlineKeyboard = [
+  [{ text: 'Youtube 🍎', callback_data: 'yt' }],
+  [{ text: 'Spotify 🍏', callback_data: 'spotify' }],
+]
+
+enum ServiceType {
+  Spotify = 'spotify',
+  Youtube = 'yt',
+}
 
 type Context = Scenes.SceneContext;
 
@@ -16,8 +24,9 @@ export class TelegramService extends Telegraf<Context> {
   constructor(
     private readonly config: ConfigService,
     private readonly youtube: YoutubeService,
+    private readonly userService: UserService,
     private readonly spotify: SpotifyService,
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    // @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {
     super(config.get('TELEGRAM_TOKEN'));
   }
@@ -31,10 +40,7 @@ What do you use?:
 
     await ctx.reply(resMsg, {
       reply_markup: {
-        inline_keyboard: [
-          [{ text: 'Youtube 🍎', callback_data: 'yt_service' }],
-          [{ text: 'Spotify 🍏', callback_data: 'spotify_service' }],
-        ],
+        inline_keyboard: mainInlineKeyboard
       },
     });
   }
@@ -43,18 +49,18 @@ What do you use?:
   async changeService(@Ctx() ctx: Context) {
     const res = ctx.callbackQuery as CallbackQuery.DataQuery;
     if (res) {
-      const type = res.data === 'spotify_service' ? 'spotify' : 'yt';
+      // const type = res.data === 'spotify_service' ? 'spotify' : 'yt';
+      const type = res.data === ServiceType.Spotify ? 'spotify' : 'yt';
 
-      await this.createUpdateUser({ chat_id: res.message.chat.id, type: type });
+      console.log(type);
+
+      await this.userService.createUpdateUser({ chat_id: res.message.chat.id, type: type });
 
       const resMsg = `You have chosen ${type === 'yt' ? 'Youtube 🍎' : 'Spotify 🍏'}, do you want to change your choice?`;
 
       await ctx.reply(resMsg, {
         reply_markup: {
-          inline_keyboard: [
-            [{ text: 'Youtube 🍎', callback_data: 'yt_service' }],
-            [{ text: 'Spotify 🍏', callback_data: 'spotify_service' }],
-          ],
+          inline_keyboard: mainInlineKeyboard
         },
       });
     }
@@ -78,7 +84,7 @@ What do you use?:
     const type = await this.linkCheck(query);
 
     if (type === 'Unknown') {
-      const userType = await this.getUser(chat_id);
+      const userType = await this.userService.getUser(chat_id);
 
       if (userType === 'spotify') {
         return await this.spotify.getSongUrl(query);
@@ -104,28 +110,28 @@ What do you use?:
     }
   }
 
-  private async createUpdateUser(userData: UserData): Promise<string> {
-    let user = await this.userModel.findOne({ chatId: userData.chat_id });
+  // private async createUpdateUser(userData: UserData): Promise<string> {
+  //   let user = await this.userModel.findOne({ chatId: userData.chat_id });
 
-    if (!user) {
-      user = new this.userModel({
-        chatId: userData.chat_id,
-        type: userData.type,
-        createdAt: new Date(),
-      });
-    } else {
-      user.type = userData.type;
-    }
+  //   if (!user) {
+  //     user = new this.userModel({
+  //       chatId: userData.chat_id,
+  //       type: userData.type,
+  //       createdAt: new Date(),
+  //     });
+  //   } else {
+  //     user.type = userData.type;
+  //   }
 
-    await user.save();
+  //   await user.save();
 
-    return 'success';
-  }
-  private async getUser(chat_id: number): Promise<string> {
-    const user = await this.userModel.findOne({ chatId: chat_id });
+  //   return 'success';
+  // }
+  // private async getUser(chat_id: number): Promise<string> {
+  //   const user = await this.userModel.findOne({ chatId: chat_id });
 
-    const userType = user.type || 'yt';
+  //   const userType = user.type || 'yt';
 
-    return userType;
-  }
+  //   return userType;
+  // }
 }

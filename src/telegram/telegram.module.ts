@@ -8,20 +8,15 @@ import { YoutubeService } from '../yt/yt.service';
 import { SpotifyService } from '../spotify/spotify.service';
 import { SpotifyModule } from '../spotify/spotify.module';
 
-import { User, UserSchema } from './schemas/user.schema';
-import { MongooseModule } from '@nestjs/mongoose';
+import { UserService } from 'src/user/user.service';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: User.name,
-        schema: UserSchema,
-      },
-    ]),
     TelegrafModule.forRootAsync(options()),
     SpotifyModule,
+    UserModule
   ],
-  providers: [TelegramService, YoutubeService, SpotifyService],
+  providers: [TelegramService, YoutubeService, SpotifyService, UserService],
 })
 export class TelegramModule {}
