@@ -1,6 +1,6 @@
 import { Ctx, Update, On, Start } from 'nestjs-telegraf';
 import { Scenes, Telegraf } from 'telegraf';
-import { InlineQueryResultArticle } from 'telegraf/typings/core/types/typegram';
+import { InlineQueryResultArticle, CallbackQuery } from 'telegraf/typings/core/types/typegram';
 import { YoutubeService } from '../yt/yt.service';
 import { SpotifyService } from '../spotify/spotify.service';
 import { ConfigService } from '@nestjs/config';
@@ -41,8 +41,8 @@ What do you use?:
 
   @On('callback_query')
   async changeService(@Ctx() ctx: Context) {
-    const res = ctx.callbackQuery;
-    if (res && 'data' in res) {
+    const res = ctx.callbackQuery as CallbackQuery.DataQuery;
+    if (res) {
       const type = res.data === 'spotify_service' ? 'spotify' : 'yt';
 
       await this.createUpdateUser({ chat_id: res.message.chat.id, type: type });

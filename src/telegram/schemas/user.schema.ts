@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 
+
 export interface UserData {
   chat_id: number;
   type: 'yt' | 'spotify';
