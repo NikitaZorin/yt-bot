@@ -26,7 +26,6 @@ export class TelegramService extends Telegraf<Context> {
     private readonly youtube: YoutubeService,
     private readonly userService: UserService,
     private readonly spotify: SpotifyService,
-    // @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {
     super(config.get('TELEGRAM_TOKEN'));
   }
@@ -49,7 +48,6 @@ What do you use?:
   async changeService(@Ctx() ctx: Context) {
     const res = ctx.callbackQuery as CallbackQuery.DataQuery;
     if (res) {
-      // const type = res.data === 'spotify_service' ? 'spotify' : 'yt';
       const type = res.data === ServiceType.Spotify ? 'spotify' : 'yt';
 
       console.log(type);
@@ -109,29 +107,4 @@ What do you use?:
       return 'Unknown';
     }
   }
-
-  // private async createUpdateUser(userData: UserData): Promise<string> {
-  //   let user = await this.userModel.findOne({ chatId: userData.chat_id });
-
-  //   if (!user) {
-  //     user = new this.userModel({
-  //       chatId: userData.chat_id,
-  //       type: userData.type,
-  //       createdAt: new Date(),
-  //     });
-  //   } else {
-  //     user.type = userData.type;
-  //   }
-
-  //   await user.save();
-
-  //   return 'success';
-  // }
-  // private async getUser(chat_id: number): Promise<string> {
-  //   const user = await this.userModel.findOne({ chatId: chat_id });
-
-  //   const userType = user.type || 'yt';
-
-  //   return userType;
-  // }
 }

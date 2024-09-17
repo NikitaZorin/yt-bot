@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { UserService } from '../user.service';
 import { UserData } from '../schemas/user.schema';
 
@@ -6,11 +6,13 @@ import { UserData } from '../schemas/user.schema';
 export class UserController {
     constructor(private readonly service: UserService) { }
 
-    createUpdateUser(userData: UserData): Promise<string> {
+    @Post()
+    createUpdateUser(@Body() userData: UserData): Promise<string> {
         return this.service.createUpdateUser(userData);
     }
 
-    getUser(chat_id: number): Promise<string> {
+    @Get()
+    getUser(@Body() chat_id: number): Promise<string> {
         return this.service.getUser(chat_id);
     }
 }

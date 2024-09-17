@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Get } from '@nestjs/common';
 import { InlineQueryResultArticle } from 'telegraf/typings/core/types/typegram';
 import { SpotifyService } from '../spotify.service';
 
@@ -6,7 +6,9 @@ import { SpotifyService } from '../spotify.service';
 export class SpotifyController {
   constructor(private readonly appService: SpotifyService) {}
 
-  getSongUrl(title: string): Promise<InlineQueryResultArticle[]> {
+
+  @Get()
+  getSongUrl(@Body() title: string): Promise<InlineQueryResultArticle[]> {
     return this.appService.getSongUrl(title);
   }
 }

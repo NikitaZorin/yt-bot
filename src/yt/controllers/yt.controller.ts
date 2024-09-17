@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Get } from '@nestjs/common';
 import { YoutubeService } from '../yt.service';
 import { InlineQueryResultArticle } from 'telegraf/typings/core/types/typegram';
 
@@ -6,7 +6,8 @@ import { InlineQueryResultArticle } from 'telegraf/typings/core/types/typegram';
 export class YtController {
     constructor(private readonly appService: YoutubeService) {}
 
-    getSongUrl(title: string): Promise<InlineQueryResultArticle[]> {
+    @Get()
+    getSongUrl(@Body() title: string): Promise<InlineQueryResultArticle[]> {
       return this.appService.getSongUrl(title);
     }
 }
