@@ -7,12 +7,12 @@ export class UserController {
     constructor(private readonly service: UserService) { }
 
     @Post()
-    createUpdateUser(@Body() userData: UserData): Promise<string> {
+    async createUpdateUser(@Body() userData: UserData): Promise<string> {
         return this.service.createUpdateUser(userData);
     }
 
     @Get()
-    getUser(@Body() chat_id: number): Promise<string> {
+    async getUser(@Body() chat_id: number): Promise<string> {
         return this.service.getUser(chat_id);
     }
 }

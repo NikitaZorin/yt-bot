@@ -29,7 +29,7 @@ export class UserService {
     async getUser(chat_id: number): Promise<string> {
         const user = await this.userModel.findOne({ chatId: chat_id });
 
-        const userType = user.type || 'yt';
+        const userType = user?.type || 'yt';
 
         return userType;
     }
