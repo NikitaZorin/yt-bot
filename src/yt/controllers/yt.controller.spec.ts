@@ -50,9 +50,13 @@ describe('YtController', () => {
     });
 
     it('should throw an error if the service throws', async () => {
-      jest.spyOn(service, 'getSongUrl').mockRejectedValue(new Error('Service error'));
-  
-      await expect(controller.getSongUrl('test song')).rejects.toThrow('Service error');
+      jest
+        .spyOn(service, 'getSongUrl')
+        .mockRejectedValue(new Error('Service error'));
+
+      await expect(controller.getSongUrl('test song')).rejects.toThrow(
+        'Service error',
+      );
     });
   });
 });

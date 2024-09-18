@@ -1,6 +1,9 @@
 import { Ctx, Update, On, Start } from 'nestjs-telegraf';
 import { Scenes, Telegraf } from 'telegraf';
-import { InlineQueryResultArticle, CallbackQuery } from 'telegraf/typings/core/types/typegram';
+import {
+  InlineQueryResultArticle,
+  CallbackQuery,
+} from 'telegraf/typings/core/types/typegram';
 
 import { YoutubeService } from '../yt/yt.service';
 import { SpotifyService } from '../spotify/spotify.service';
@@ -10,7 +13,7 @@ import { UserService } from 'src/user/user.service';
 const mainInlineKeyboard = [
   [{ text: 'Youtube 🍎', callback_data: 'yt' }],
   [{ text: 'Spotify 🍏', callback_data: 'spotify' }],
-]
+];
 
 enum ServiceType {
   Spotify = 'spotify',
@@ -39,7 +42,7 @@ What do you use?:
 
     await ctx.reply(resMsg, {
       reply_markup: {
-        inline_keyboard: mainInlineKeyboard
+        inline_keyboard: mainInlineKeyboard,
       },
     });
   }
@@ -50,13 +53,16 @@ What do you use?:
     if (res) {
       const type = res.data === ServiceType.Spotify ? 'spotify' : 'yt';
 
-      await this.userService.createUpdateUser({ chat_id: res.message.chat.id, type: type });
+      await this.userService.createUpdateUser({
+        chat_id: res.message.chat.id,
+        type: type,
+      });
 
       const resMsg = `You have chosen ${type === 'yt' ? 'Youtube 🍎' : 'Spotify 🍏'}, do you want to change your choice?`;
 
       await ctx.reply(resMsg, {
         reply_markup: {
-          inline_keyboard: mainInlineKeyboard
+          inline_keyboard: mainInlineKeyboard,
         },
       });
     }

@@ -13,7 +13,6 @@ import { UserService } from './user.service';
     ]),
   ],
   providers: [UserService],
-  exports: [UserService, MongooseModule]
+  exports: [UserService, MongooseModule],
 })
 export class UserModule {}
-

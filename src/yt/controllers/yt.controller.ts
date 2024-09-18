@@ -4,10 +4,10 @@ import { InlineQueryResultArticle } from 'telegraf/typings/core/types/typegram';
 
 @Controller('yt')
 export class YtController {
-    constructor(private readonly appService: YoutubeService) {}
+  constructor(private readonly appService: YoutubeService) {}
 
-    @Get()
-    getSongUrl(@Body() title: string): Promise<InlineQueryResultArticle[]> {
-      return this.appService.getSongUrl(title);
-    }
+  @Get()
+  getSongUrl(@Body() title: string): Promise<InlineQueryResultArticle[]> {
+    return this.appService.getSongUrl(title);
+  }
 }

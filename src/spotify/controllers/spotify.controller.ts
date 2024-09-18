@@ -6,7 +6,6 @@ import { SpotifyService } from '../spotify.service';
 export class SpotifyController {
   constructor(private readonly appService: SpotifyService) {}
 
-
   @Get()
   getSongUrl(@Body() title: string): Promise<InlineQueryResultArticle[]> {
     return this.appService.getSongUrl(title);

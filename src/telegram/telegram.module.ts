@@ -12,11 +12,7 @@ import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [
-    TelegrafModule.forRootAsync(options()),
-    SpotifyModule,
-    UserModule
-  ],
+  imports: [TelegrafModule.forRootAsync(options()), SpotifyModule, UserModule],
   providers: [TelegramService, YoutubeService, SpotifyService, UserService],
 })
 export class TelegramModule {}

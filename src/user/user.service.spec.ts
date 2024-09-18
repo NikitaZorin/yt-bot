@@ -6,14 +6,13 @@ import { UserData } from './schemas/user.schema';
 describe('UserService', () => {
   let service: UserService;
   let userModelMock: any;
-  let testChatId = 123456789;
+  const testChatId = 123456789;
 
   beforeEach(async () => {
-
     userModelMock = {
-      findOne: jest.fn(), 
+      findOne: jest.fn(),
       create: jest.fn(),
-      save: jest.fn(),     
+      save: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -21,7 +20,7 @@ describe('UserService', () => {
         UserService,
         {
           provide: getModelToken('User'),
-          useValue: userModelMock, 
+          useValue: userModelMock,
         },
       ],
     }).compile();
@@ -43,7 +42,9 @@ describe('UserService', () => {
 
     const result = await service.createUpdateUser(userData);
 
-    expect(userModelMock.findOne).toHaveBeenCalledWith({ chatId: userData.chat_id });
+    expect(userModelMock.findOne).toHaveBeenCalledWith({
+      chatId: userData.chat_id,
+    });
     expect(userModelMock.create).toHaveBeenCalledWith({
       chatId: userData.chat_id,
       type: userData.type,
@@ -53,7 +54,7 @@ describe('UserService', () => {
   });
 
   it('get user from db', async () => {
-    const userMock = {chat_id: testChatId, type: 'yt'}
+    const userMock = { chat_id: testChatId, type: 'yt' };
 
     userModelMock.findOne.mockResolvedValueOnce(userMock);
 
