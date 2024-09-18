@@ -13,7 +13,7 @@ export class UserService {
         let user = await this.userModel.findOne({ chatId: userData.chat_id });
 
         if (!user) {
-            user = new this.userModel({
+            user = await this.userModel.create({
                 chatId: userData.chat_id,
                 type: userData.type,
                 createdAt: new Date(),

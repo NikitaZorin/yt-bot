@@ -50,8 +50,6 @@ What do you use?:
     if (res) {
       const type = res.data === ServiceType.Spotify ? 'spotify' : 'yt';
 
-      console.log(type);
-
       await this.userService.createUpdateUser({ chat_id: res.message.chat.id, type: type });
 
       const resMsg = `You have chosen ${type === 'yt' ? 'Youtube 🍎' : 'Spotify 🍏'}, do you want to change your choice?`;
