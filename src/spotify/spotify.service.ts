@@ -24,10 +24,9 @@ export class SpotifyService {
     await this.getAccessToken();
 
     try {
-      const data = await this.spotifyApi.searchTracks(`track:${title}`, {
+      const data = await this.spotifyApi.searchTracks(title, {
         limit: 5,
       });
-
       const result: InlineQueryResultArticle[] = [];
 
       data.body.tracks.items.forEach((song) => {
@@ -42,10 +41,32 @@ export class SpotifyService {
         });
       });
 
+
+
       return result;
     } catch (error) {
       console.error('Ошибка при получении URL видео:', error);
       throw new Error('Не удалось получить URL видео');
+    }
+  }
+
+  async getSongTitle(id: string): Promise<string> {
+    await this.getAccessToken();
+  
+    try {
+      const data = await this.spotifyApi.getTrack(id);
+  
+      if (data.body) {
+        const track = data.body;
+        const title = `${track.artists[0].name} - ${track.name}`;
+
+        return title;
+      } else {
+        throw new Error('Трек с таким ID не найден');
+      }
+    } catch (error) {
+      console.error('Ошибка при получении названия трека:', error);
+      throw new Error('Не удалось получить название трека');
     }
   }
 

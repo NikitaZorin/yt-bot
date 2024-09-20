@@ -10,15 +10,12 @@ import { SpotifyService } from '../spotify/spotify.service';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/user/user.service';
 
+import { LinkType, ServiceType } from './telegram.enums';
+
 const mainInlineKeyboard = [
   [{ text: 'Youtube 🍎', callback_data: 'yt' }],
   [{ text: 'Spotify 🍏', callback_data: 'spotify' }],
 ];
-
-enum ServiceType {
-  Spotify = 'spotify',
-  Youtube = 'yt',
-}
 
 type Context = Scenes.SceneContext;
 
@@ -68,7 +65,7 @@ What do you use?:
     }
   }
 
-  @On('inline_query')
+  @On('inline_query') // добавить сюда логику получения по ссылке, использовать название трека 
   async onMessage(@Ctx() ctx: Context) {
     const query = ctx.inlineQuery.query;
 
@@ -83,12 +80,16 @@ What do you use?:
     query: string,
     chat_id: number,
   ): Promise<InlineQueryResultArticle[]> {
-    const type = await this.linkCheck(query);
+    const { type, id } = await this.linkCheck(query);
 
-    if (type === 'Unknown') {
+    if (query) {
+      if (id) {
+        query = await this[type].getSongTitle(id);
+      }
+
       const userType = await this.userService.getUser(chat_id);
 
-      if (userType === 'spotify') {
+      if ((userType === 'spotify' && !id) || (id && userType === "yt")) {
         return await this.spotify.getSongUrl(query);
       } else {
         return await this.youtube.getSongUrl(query);
@@ -98,17 +99,20 @@ What do you use?:
     }
   }
 
-  private async linkCheck(link: string): Promise<string> {
-    const youtubeRegex =
-      /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|music\.youtube\.com)\/.+$/;
-    const spotifyRegex = /^(https?:\/\/)?(open\.)?(spotify\.com)\/.+$/;
+  private async linkCheck(link: string): Promise<{ type: LinkType; id: string | null }> {
+    const youtubePattern = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|music\/watch\?v=))([^&?/]+)/;
+    const spotifyPattern = /(?:spotify\.com\/track\/)([^&?/]+)/;
 
-    if (youtubeRegex.test(link)) {
-      return 'Youtube';
-    } else if (spotifyRegex.test(link)) {
-      return 'Spotify';
-    } else {
-      return 'Unknown';
+    let match = link.match(youtubePattern);
+    if (match) {
+      return { type: LinkType.Youtube, id: match[1] };
     }
+
+    match = link.match(spotifyPattern);
+    if (match) {
+      return { type: LinkType.Spotify, id: match[1] };
+    }
+
+    return { type: LinkType.Unknown, id: null };
   }
 }
