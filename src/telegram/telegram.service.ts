@@ -89,9 +89,9 @@ What do you use?:
 
       const userType = await this.userService.getUser(chat_id);
 
-      if ((userType === 'spotify' && !id) || (id && userType === "yt")) {
+      if (userType === 'spotify' || (type === "youtube" && id)) {
         return await this.spotify.getSongUrl(query);
-      } else {
+      } else if (userType === 'yt' || (type === "spotify" && id)){
         return await this.youtube.getSongUrl(query);
       }
     } else {

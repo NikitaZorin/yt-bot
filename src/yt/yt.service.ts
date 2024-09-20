@@ -19,7 +19,8 @@ export class YoutubeService {
         params: {
           part: 'snippet',
           q: title,
-          type: 'video', 
+          type: 'video',
+          videoCategoryId: 10,
           maxResults: 5,
           key: this.apiKey,
         },
